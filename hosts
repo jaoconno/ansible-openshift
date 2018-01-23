@@ -1,0 +1,50 @@
+[OSEv3:vars]
+
+###########################################################################
+### Ansible Vars
+###########################################################################
+timeout=60
+ansible_become=yes
+ansible_ssh_user=ec2-user
+
+
+# disable memory check, as we are not a production environment
+openshift_disable_check="memory_availability"
+
+[OSEv3:children]
+lb
+masters
+etcd
+nodes
+nfs
+
+[lb]
+loadbalancer1.bd59.internal host_zone=us-east-1f
+
+[masters]
+master3.bd59.internal host_zone=us-east-1f
+master1.bd59.internal host_zone=us-east-1f
+master2.bd59.internal host_zone=us-east-1f
+
+[etcd]
+master3.bd59.internal host_zone=us-east-1f
+master1.bd59.internal host_zone=us-east-1f
+master2.bd59.internal host_zone=us-east-1f
+
+[nodes]
+## These are the masters
+master3.bd59.internal openshift_hostname=master3.bd59.internal  openshift_node_labels="{'logging':'true','openshift_schedulable':'False','cluster': 'bd59', 'zone': 'us-east-1f'}"
+master1.bd59.internal openshift_hostname=master1.bd59.internal  openshift_node_labels="{'logging':'true','openshift_schedulable':'False','cluster': 'bd59', 'zone': 'us-east-1f'}"
+master2.bd59.internal openshift_hostname=master2.bd59.internal  openshift_node_labels="{'logging':'true','openshift_schedulable':'False','cluster': 'bd59', 'zone': 'us-east-1f'}"
+
+## These are infranodes
+infranode1.bd59.internal openshift_hostname=infranode1.bd59.internal  openshift_node_labels="{'logging':'true','cluster': 'bd59', 'env':'infra', 'zone': 'us-east-1f'}"
+infranode2.bd59.internal openshift_hostname=infranode2.bd59.internal  openshift_node_labels="{'logging':'true','cluster': 'bd59', 'env':'infra', 'zone': 'us-east-1f'}"
+
+## These are regular nodes
+node1.bd59.internal openshift_hostname=node1.bd59.internal  openshift_node_labels="{'logging':'true','cluster': 'bd59', 'env':'app', 'zone': 'us-east-1f'}"
+node2.bd59.internal openshift_hostname=node2.bd59.internal  openshift_node_labels="{'logging':'true','cluster': 'bd59', 'env':'app', 'zone': 'us-east-1f'}"
+node3.bd59.internal openshift_hostname=node3.bd59.internal  openshift_node_labels="{'logging':'true','cluster': 'bd59', 'env':'app', 'zone': 'us-east-1f'}"
+
+[nfs]
+support1.bd59.internal openshift_hostname=support1.bd59.internal
